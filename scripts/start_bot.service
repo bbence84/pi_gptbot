@@ -1,0 +1,11 @@
+[Unit]
+Description=Start Bot Script
+
+[Service]
+User=bot
+WorkingDirectory=/home/bot/pi_gptbot/app
+ExecStart=/home/bot/pi_gptbot/scripts/start_bot.sh
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

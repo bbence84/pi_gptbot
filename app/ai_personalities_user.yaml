@@ -1,0 +1,3 @@
+presets:
+  - name: Test prompt
+    prompt: "You are a test"

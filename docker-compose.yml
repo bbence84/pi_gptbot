@@ -1,0 +1,16 @@
+# NOT WORKING YET, WORK IN PROGRESS
+
+version: '1.0'
+
+services:
+  pi_gptbot:
+    env_file:
+      - .env  
+    privileged: true
+    container_name: pi_gptbot
+    image: pi_gptbot
+    devices:
+      - /dev/snd:/dev/snd
+    build:
+      context: .
+      dockerfile: ./Dockerfile
