@@ -100,6 +100,9 @@ OPENAI_API_TYPE=openai
 SPEECH_KEY=<YOUR_API_KEY>
 SPEECH_REGION=westeurope
 DISABLE_LCD=False
+GMAIL_USERNAME=
+GMAIL_PASSWORD=
+SEND_URL_TO_EMAIL=bbence84@gmail.com
 ```
 
 In case you would like to use Azure OpenaAI services, uncomment the 3 lines and also set those variables. Then change the OPENAI_API_TYPE variable to "azure" (without quotes)
