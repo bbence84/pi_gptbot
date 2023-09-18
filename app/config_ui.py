@@ -135,14 +135,20 @@ def restart_bot():
 def reboot_system():
     ui.notify('Rebooting system...')
     os.system('sudo reboot')    
-        
+
+def send_mail_for_url(urls):
+    for url in urls:
+        if 'nicegui.io' in url:
+            emailer.sendmail('bbence84@gmail.com', 'Pi-GPTBot Config UI URL', url)  
+
 def main():
     load_prompt_presets()
     build_config_ui()   
     ui.run(title='Pi-GPTBot Settings', uvicorn_reload_includes='.py,.yaml', on_air=True) 
-    #emailer.sendmail('bbence84@gmail.com', 'Pi-GPTBot Config UI URL', 'http://')  
+
+    # send email with url if it's available in the nicegui package
     if hasattr(app, "urls"):
-        app.urls.on_change(lambda x: print(list(x.sender)))
+        app.urls.on_change(lambda x: send_mail_for_url(list(x.sender)))
   
 if __name__ in {"__main__", "__mp_main__"}:
     main()
