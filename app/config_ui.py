@@ -148,7 +148,6 @@ def main():
 
     # send email with url if it's available in the nicegui package
     if hasattr(app, "urls"):
-        print("Config UI urls: " + list(app.urls.sender))
         app.urls.on_change(lambda x: send_mail_for_url(list(x.sender)))
   
 if __name__ in {"__main__", "__mp_main__"}:

@@ -20,7 +20,7 @@ class Emailer:
             session.starttls()
             session.ehlo()
             session.login(GMAIL_USERNAME, GMAIL_PASSWORD)
-
+            print("Sending email to " + recipient + ".")
             session.sendmail(GMAIL_USERNAME, recipient, headers + "\r\n\r\n" + content)
             session.quit
 
