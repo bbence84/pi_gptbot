@@ -9,7 +9,7 @@ import re
 import sys
 from pathlib import Path
 log_file_path = str(Path(__file__).resolve().parent.joinpath('', 'bot_log.txt'))
-#sys.stdout = open(log_file_path, 'w')
+sys.stdout = open(log_file_path, 'w')
 
 from dotenv import load_dotenv
 load_dotenv()
