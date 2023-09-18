@@ -189,7 +189,8 @@ If you want to disable it, open config_ui.py and remove the on_air=True part at 
 ## Adding new personalities to the voice assistant
 
 You can add / edit system prompts that you can pick on the config UI. These system prompts influence how the voice assistant "behaves", what personality it will have.
-File for editing `ai_personalities_user.yaml`
+Create a new file with name ai_personalities_user.yaml in the app folder:
+`nano ai_personalities_user.yaml`
 
 ## Wifi config
 

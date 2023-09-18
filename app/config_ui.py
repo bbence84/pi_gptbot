@@ -1,11 +1,14 @@
-from nicegui import ui
+from nicegui import ui, app
 from botconfig import BotConfig
+from emailer import Emailer
 import yaml
 from pathlib import Path
 import os
 
 bot_config = BotConfig()
 preset_contents = []
+
+emailer = Emailer()
 
 def save_ui_config():
     bot_config.save_config()
@@ -20,12 +23,13 @@ def load_prompt_presets():
 def load_prompt_preset_from_file(file_name):
     global preset_contents 
     preset_path = str(Path(__file__).resolve().parent.joinpath('', file_name))
-    with open(preset_path, "r") as stream:
-        try:
-            content = yaml.safe_load(stream)
-            preset_contents.extend(content['presets'])
-        except yaml.YAMLError as exc:
-            print(exc)
+    if os.path.isfile(preset_path):
+        with open(preset_path, "r") as stream:
+            try:
+                content = yaml.safe_load(stream)
+                preset_contents.extend(content['presets'])
+            except yaml.YAMLError as exc:
+                print(exc)
             
 def change_prompt_from_preset(preset_name):
     for preset in preset_contents:
@@ -135,7 +139,9 @@ def reboot_system():
 def main():
     load_prompt_presets()
     build_config_ui()   
-    ui.run(title='Pi-GPTBot Settings', uvicorn_reload_includes='.py,.yaml', on_air=True)   
+    ui.run(title='Pi-GPTBot Settings', uvicorn_reload_includes='.py,.yaml', on_air=True) 
+    #emailer.sendmail('bbence84@gmail.com', 'Pi-GPTBot Config UI URL', 'http://')  
+    app.urls.on_change(lambda x: print(list(x.sender)))
   
 if __name__ in {"__main__", "__mp_main__"}:
     main()
