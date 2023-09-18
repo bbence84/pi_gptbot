@@ -141,7 +141,8 @@ def main():
     build_config_ui()   
     ui.run(title='Pi-GPTBot Settings', uvicorn_reload_includes='.py,.yaml', on_air=True) 
     #emailer.sendmail('bbence84@gmail.com', 'Pi-GPTBot Config UI URL', 'http://')  
-    app.urls.on_change(lambda x: print(list(x.sender)))
+    if hasattr(app, "urls"):
+        app.urls.on_change(lambda x: print(list(x.sender)))
   
 if __name__ in {"__main__", "__mp_main__"}:
     main()
