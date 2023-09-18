@@ -2,7 +2,7 @@
 Description=Start Config UI Web Server Script
 
 [Service]
-User=root
+User=bot
 WorkingDirectory=/home/bot/pi_gptbot/app
 ExecStart=/home/bot/pi_gptbot/scripts/start_config_ui.sh
 KillSignal=SIGINT

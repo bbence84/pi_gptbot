@@ -1,5 +1,7 @@
 # PI GPTBot
 
+![The voice assistant](https://github.com/bbence84/pi_gptbot/assets/1684946/c894caae-cafa-4d47-bd74-944e8edb3ff3)
+
 This is a relatively simple Python based implementation of a Raspberry Pi based voice assistant that has the following features:
 - Leverages the OpenAI APIs (Azure or regular OpenAI endpoints) to act the main conversational "engine"
 - Uses Azure Cognitive Services for Text to Speech and Speech to Text (voice recognition)
@@ -100,12 +102,19 @@ OPENAI_API_TYPE=openai
 SPEECH_KEY=<YOUR_API_KEY>
 SPEECH_REGION=westeurope
 DISABLE_LCD=False
-GMAIL_USERNAME=
+GMAIL_USERNAME=xxx@gmail.com
 GMAIL_PASSWORD=
-SEND_URL_TO_EMAIL=bbence84@gmail.com
+SEND_URL_TO_EMAIL=xxx@xxx.com
 ```
 
 In case you would like to use Azure OpenaAI services, uncomment the 3 lines and also set those variables. Then change the OPENAI_API_TYPE variable to "azure" (without quotes)
+
+The bot configuration UI (see later for details) can send an email (announcing the temporary url) upon booting the voice assistant. This leverages a beta feature from one of the underlying Python packages (nicegui). This temporary URL will be available for about 10 minutes after booting. Later versions of this python package might provide stable urls... To configure the email sending, set the below .env paramaters. You will want to create a new gmail email address and set an app password (see here for details: https://www.sitepoint.com/quick-tip-sending-email-via-gmail-with-python/). (SEND_URL_TO_EMAIL is the recipient email address to which you want to send the temporary url.)
+```
+GMAIL_USERNAME=xxx@gmail.com
+GMAIL_PASSWORD=
+SEND_URL_TO_EMAIL=xxx@xxx.com
+```
 
 ### Setup autostart for the config UI and the bot (optional)
 
@@ -210,6 +219,23 @@ network={‎
 ```
 
 Save and restart (double check the above settings if they are correct)
+
+## Config UI
+
+If you are running the voice assistant on a local network, it will be available on the following URL: http://pi-gptbot:8080/
+If you need to access the config UI, e.g. to reload the assistant or change parameters, an automatic email can be configured via the environment variables (see chapter "Set required environment variables") that will announce a temporarily generated URL, that is made available using a tunnel.
+
+On the config UI, you can configure the following settings:
+- Max tokens and temperature for the OpenAI APIs (the GPT model name does not have an effect for Azure)
+- Max token count for the whole conversation (ChatGPT 3.5 can support about 4K tokens). Handy to improve the response time. After this amount of tokens are reached, the conversation history resets
+- Prompt presets: you can use the preconfigured "personalities" or use your own (see previous chapter)
+- Azure TTS voice name
+- Volume, pitch, speaking rate
+- Set if after each speaking "round", the voice assistant should mute the mic, which gets enabled on a button press (this can be handy in a noisy environment, where otherwise you would have no influence which commands the assitant picks up)
+- To speed up the response time a bit, you can disable face redraws on the LCD
+- There's an experimental language switch feature where you could use a voice command to change languages (see source code)
+
+![Config UI 1](https://github.com/bbence84/pi_gptbot/assets/1684946/fa944103-e188-493d-afe4-55d5709c2f65)
 
 ## Contributing
 
