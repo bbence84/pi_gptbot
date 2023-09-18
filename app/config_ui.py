@@ -149,6 +149,8 @@ def main():
     # send email with url if it's available in the nicegui package
     if hasattr(app, "urls"):
         app.urls.on_change(lambda x: send_mail_for_url(list(x.sender)))
+    else:
+        print("E-mail sending is not available.")
   
 if __name__ in {"__main__", "__mp_main__"}:
     main()
