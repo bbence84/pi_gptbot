@@ -139,7 +139,7 @@ def reboot_system():
 def send_mail_for_url(urls):
     for url in urls:
         if 'nicegui.io' in url:
-            emailer.sendmail('bbence84@gmail.com', 'Pi-GPTBot Config UI URL', url)  
+            emailer.sendmail(os.getenv('SEND_URL_TO_EMAIL', ''), 'Pi-GPTBot Config UI URL', url)  
 
 def main():
     load_prompt_presets()
