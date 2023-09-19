@@ -57,14 +57,14 @@ Save the text file and restart your Raspberry Pi.
 ### Install required Linux packages
 ```
 sudo apt-get update -y && \
-    apt-get install python3 -y && \
-    apt-get install python3-pip -y && \
-    apt-get install -y --no-install-recommends \
+ sudo    apt-get install python3 -y && \
+ sudo    apt-get install python3-pip -y && \
+  sudo   apt-get install -y --no-install-recommends \
         libasound2-dev \
         alsa-base \
         alsa-utils \
         libsndfile1-dev && \
-    apt-get clean
+   sudo  apt-get clean
 ```
 
 ### Clone repo
@@ -74,12 +74,10 @@ cd /home/bot/
 sudo apt install git
 git clone https://github.com/bbence84/pi_gptbot.git
 ```
-
 ### Install required Python packages
 
 ```
 cd /home/bot/pi_gptbot
-sudo pip3 install pyalsaaudio
 sudo python3 -m pip install -r requirements.txt
 ```
 
@@ -164,7 +162,7 @@ sudo nano /etc/systemd/system/start_config_ui.service
 Description=Start Config UI Web Server Script
 
 [Service]
-User=root
+User=bot
 WorkingDirectory=/home/bot/pi_gptbot/app
 ExecStart=/home/bot/pi_gptbot/scripts/start_config_ui.sh
 KillSignal=SIGINT
