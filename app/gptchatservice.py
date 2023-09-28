@@ -32,7 +32,7 @@ class GPTChatService:
 
         self.chat_messages = self.initial_prompt
                 
-        self.log.debug(f"Initial ChatGPT prompt:  {self.chat_messages}")
+        self.log.info(f"Initial ChatGPT prompt:  {self.chat_messages}")
 
         self.tokenizer_encoding = tiktoken.get_encoding("cl100k_base")
 
@@ -43,9 +43,7 @@ class GPTChatService:
     def ask(self, question):
     
         self.append_text_to_chat_log(question, True)
-        
-        # print('OpenAI API call started')
-               
+                   
         start = time.time()
 
         try:
@@ -75,10 +73,14 @@ class GPTChatService:
 
         except Exception as e:
             print(f"OpenAI API returned an Error", flush=True)
+            self.log.error(f"OpenAI API returned an Error")
             if hasattr(e, 'message'):
                 print(e.code, flush=True)
+                self.log.error(e.code)
                 print(e.message, flush=True)
+                self.log.error(e.message)
             else:
+                self.log.error(e.code)
                 print(e.code, flush=True)                
                 print(e, flush=True)          
             return ""    
@@ -96,7 +98,7 @@ class GPTChatService:
         
         self.append_text_to_chat_log(response_text)
         
-        self.log.info(f"OpenAI ChatGPT response:  {response_text}")
+        self.log.info(f"ChatGPT response:  {response_text}")
 
         return response_text    
 
@@ -129,7 +131,6 @@ class GPTChatService:
         if (is_user):
             role = "user"
         self.chat_messages.append({"role": role, "content": text })
-        self.log.info(f"Chat buffer:  {self.chat_messages}")
         
     def adjust_response(self, response_text):
         adjusted_response_text = response_text

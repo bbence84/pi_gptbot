@@ -97,7 +97,7 @@ def recognized(evt: speechsdk.SpeechRecognitionEventArgs):
         
         if stt_text == "" or check_single_char_dot(stt_text): return
  
-        recognized_text_log = f"Recognized (len: {len(stt_text)}): {stt_text}"
+        recognized_text_log = f"Recognized speech: {stt_text}"
         print(recognized_text_log, flush=True)
         log.info(recognized_text_log)
 
@@ -116,11 +116,13 @@ def recognized(evt: speechsdk.SpeechRecognitionEventArgs):
             if (lang_switcher != None):
                 change_language(lang_switcher)
                 print(f"Language switched to {lang_switcher['language']}")
+                self.log.info(f"Language switched to {lang_switcher['language']}")
                 stt_text = f" From now on, you will have to respond in {lang_switcher['language']}! So please respond in {lang_switcher['language']}. Acknowledge this by saying that you will speak now in {lang_switcher['language']}"
 
         response_text = gpt_service.ask(stt_text)
-        print(f'OpenAI API call ended: {time.time() - start} ms', flush=True)
-        #print("AI response: ", response_text)
+        openai_call_duration = f'OpenAI API call ended: {time.time() - start} ms'
+        print(openai_call_duration, flush=True)
+        self.log.debug(openai_call_duration)
         thinking = False
         
         if (bot_config.change_face == True):
@@ -141,8 +143,10 @@ def recognized(evt: speechsdk.SpeechRecognitionEventArgs):
             
         
     except Exception as e:
+        self.log.error(e)
         if hasattr(e, 'message'):
             print(e.message)
+            self.log.error(e.message)
         else:
             print(e)          
         return "" 
@@ -359,7 +363,6 @@ def toggle_mute(listening_local):
 def init_ai():
     global gpt_service
     gpt_service = GPTChatService(translation[ui_lang]['lang'])
-    print(gpt_service)
     print(translation[ui_lang]['lang'])
 
 def end_program(write_stats = True):
