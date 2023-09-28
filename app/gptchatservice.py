@@ -17,9 +17,7 @@ class GPTChatService:
     
     def init_logging():
         self.log = logging.getLogger("bot_log")
-        logging.basicConfig(filename='gpt_service.log', level=logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        logging.setFormatter(formatter)
+        logging.basicConfig(filename='gpt_service.log', level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     
     def __init__(self, default_language="German"):

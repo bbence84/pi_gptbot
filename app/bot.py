@@ -100,7 +100,7 @@ def recognized(evt: speechsdk.SpeechRecognitionEventArgs):
         recognized_text_log = f"Recognized (len: {len(stt_text)}): {stt_text}"
         print(recognized_text_log, flush=True)
         log.info(recognized_text_log)
-        
+
         total_stt_chars += len(stt_text)
 
         if (mute_mic_during_tts): utils.mute_mic(device_name=input_device_name)
@@ -224,9 +224,7 @@ def run_ai():
 def init_logging():
     global log
     log = logging.getLogger("bot_log")
-    logging.basicConfig(filename='gpt_service.log', level=logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    logging.setFormatter(formatter)     
+    logging.basicConfig(filename='gpt_service.log', level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 def check_internet():
         
