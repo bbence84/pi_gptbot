@@ -78,7 +78,7 @@ git clone https://github.com/bbence84/pi_gptbot.git
 
 ```
 cd /home/bot/pi_gptbot
-sudo python3 -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 ### Set required environment variables

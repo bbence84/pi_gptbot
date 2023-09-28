@@ -15,10 +15,16 @@ bot_config = BotConfig()
 
 class GPTChatService:
     
-    log = logging.getLogger("bot_log")
-    logging.basicConfig(filename='gpt_service.log', level=logging.DEBUG, filemode='w')
+    def init_logging():
+        self.log = logging.getLogger("bot_log")
+        logging.basicConfig(filename='gpt_service.log', level=logging.INFO)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        logging.setFormatter(formatter)
+
     
     def __init__(self, default_language="German"):
+
+        self.init_logging()
 
         self.default_language = default_language        
 

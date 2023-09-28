@@ -202,8 +202,10 @@ class BotConfig:
         
         log_file_path = str(Path(__file__).resolve().parent.joinpath('', 'bot_log.txt'))
         #print(log_file_path)
-        with open(log_file_path, 'r') as file:
-            data = file.read()
-            #print(data)
+        data = ''
+        if os.path.isfile(log_file_path):
+            with open(log_file_path, 'r') as file:
+                data = file.read()
+                #print(data)
         return data
     

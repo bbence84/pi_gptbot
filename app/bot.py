@@ -97,7 +97,10 @@ def recognized(evt: speechsdk.SpeechRecognitionEventArgs):
         
         if stt_text == "" or check_single_char_dot(stt_text): return
  
-        print(f"Recognized (len: {len(stt_text)}): {stt_text}", flush=True)
+        recognized_text_log = f"Recognized (len: {len(stt_text)}): {stt_text}"
+        print(recognized_text_log, flush=True)
+        log.info(recognized_text_log)
+        
         total_stt_chars += len(stt_text)
 
         if (mute_mic_during_tts): utils.mute_mic(device_name=input_device_name)
@@ -209,15 +212,24 @@ def run_ai():
 
     program_start_time = time.time()
   
-    print("Speak!")
-    lcd_service.draw_face(face=LCDServiceColor.FACE_LISTEN, icon=LCDServiceColor.ICON_MIC, additional_text=translation[ui_lang]['listening'])
+    if (bot_config.auto_mute_mic == True): 
+        toggle_mute(False)
+    else:
+        print("Speak!")
+        lcd_service.draw_face(face=LCDServiceColor.FACE_LISTEN, icon=LCDServiceColor.ICON_MIC, additional_text=translation[ui_lang]['listening'])
+
     while not done:
         time.sleep(.5)
 
+def init_logging():
+    global log
+    log = logging.getLogger("bot_log")
+    logging.basicConfig(filename='gpt_service.log', level=logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.setFormatter(formatter)     
+
 def check_internet():
         
-    logging.basicConfig(filename='gpt_service.log', level=logging.DEBUG, filemode='w')
-    log = logging.getLogger("bot_log")    
     log.info("Checking internet connection")
     if (utils.has_internet() == True):
         return
@@ -225,10 +237,10 @@ def check_internet():
     time.sleep(1)
 
     while not utils.has_internet():
-        lcd_service.draw_large_icon(LCDServiceColor.ICON_ERROR, "No internet!")
+        lcd_service.draw_large_icon(LCDServiceColor.ICON_ERROR, "Waiting for internet connect...")
         time.sleep(1)
     
-    lcd_service.draw_large_icon(LCDServiceColor.ICON_WIFI, "Internet connected! :)")
+    lcd_service.draw_large_icon(LCDServiceColor.ICON_WIFI, "Internet connection found!")
     time.sleep(1)
     lcd_service.clear_screen()    
 
@@ -375,6 +387,7 @@ def end_program(write_stats = True):
 def main():
     try:
         init_gpio()
+        init_logging()
         check_internet()
         init_azure(bot_config.voice_name)        
         init_ai()        
