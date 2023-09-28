@@ -209,6 +209,8 @@ def set_speech_recognizer_events():
 
 def run_ai():
 
+    log.info("Started bot...")
+
     global program_start_time
 
     # Start continous speech recognition
@@ -232,7 +234,6 @@ def init_logging():
 
 def check_internet():
         
-    log.info("Checking internet connection")
     if (utils.has_internet() == True):
         return
         
