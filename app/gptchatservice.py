@@ -15,7 +15,7 @@ bot_config = BotConfig()
 
 class GPTChatService:
     
-    def init_logging():
+    def init_logging(self):
         self.log = logging.getLogger("bot_log")
         logging.basicConfig(filename='gpt_service.log', level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
