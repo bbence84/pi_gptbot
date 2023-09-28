@@ -116,13 +116,13 @@ def recognized(evt: speechsdk.SpeechRecognitionEventArgs):
             if (lang_switcher != None):
                 change_language(lang_switcher)
                 print(f"Language switched to {lang_switcher['language']}")
-                self.log.info(f"Language switched to {lang_switcher['language']}")
+                log.info(f"Language switched to {lang_switcher['language']}")
                 stt_text = f" From now on, you will have to respond in {lang_switcher['language']}! So please respond in {lang_switcher['language']}. Acknowledge this by saying that you will speak now in {lang_switcher['language']}"
 
         response_text = gpt_service.ask(stt_text)
         openai_call_duration = f'OpenAI API call ended: {time.time() - start} ms'
         print(openai_call_duration, flush=True)
-        self.log.debug(openai_call_duration)
+        log.debug(openai_call_duration)
         thinking = False
         
         if (bot_config.change_face == True):
@@ -143,10 +143,10 @@ def recognized(evt: speechsdk.SpeechRecognitionEventArgs):
             
         
     except Exception as e:
-        self.log.error(e)
+        log.error(e)
         if hasattr(e, 'message'):
             print(e.message)
-            self.log.error(e.message)
+            log.error(e.message)
         else:
             print(e)          
         return "" 
