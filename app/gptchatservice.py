@@ -36,6 +36,18 @@ class GPTChatService:
 
         self.tokenizer_encoding = tiktoken.get_encoding("cl100k_base")
 
+        self.api_type = os.getenv('OPENAI_API_TYPE')
+        if self.api_type == 'azure':
+            self.client = openai.AzureOpenAI(
+                api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
+                azure_endpoint = os.getenv('AZURE_OPENAI_ENDPOINT'),
+                api_version = os.getenv('AZURE_OPENAI_VERSION'),                          
+            )                    
+        else:
+            self.client = openai.OpenAI(
+                api_key=os.environ.get("OPENAI_API_KEY"),
+            )           
+
         # Statistics
         self.total_ai_tokens = 0        
         
@@ -48,10 +60,8 @@ class GPTChatService:
 
         try:
 
-            api_type = os.getenv('OPENAI_API_TYPE')
-
-            if api_type == 'azure':
-                response = openai.ChatCompletion.create( 
+            if self.api_type == 'azure':
+                response = self.client.chat.completions.create( 
                     api_key = os.getenv('OPENAI_API_KEY'),
                     api_type = 'azure',
                     api_base = os.getenv('AZURE_OPENAI_ENDPOINT'),
@@ -62,7 +72,7 @@ class GPTChatService:
                     temperature=bot_config.temperature
                 )
             else:
-                response = openai.ChatCompletion.create(
+                response = self.client.chat.completions.create(
                     api_key = os.getenv('OPENAI_API_KEY'),
                     model=bot_config.gpt_model,
                     messages=self.chat_messages ,
