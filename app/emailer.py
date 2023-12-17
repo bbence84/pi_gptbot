@@ -24,7 +24,6 @@ class Emailer:
             session.sendmail(GMAIL_USERNAME, recipient, headers + "\r\n\r\n" + content)
             session.quit
 
-
 # if __name__ == "__main__":
 #     sender = Emailer()
 #     sendTo = 'xxxx@xxxx.com'

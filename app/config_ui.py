@@ -10,6 +10,7 @@ preset_contents = []
 
 emailer = Emailer()
 
+
 def save_ui_config():
     bot_config.save_config()
     ui.notify('Save successful!')

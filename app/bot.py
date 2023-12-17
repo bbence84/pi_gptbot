@@ -141,7 +141,6 @@ def recognized(evt: speechsdk.SpeechRecognitionEventArgs):
         else:
             toggle_mute(True)
             
-        
     except Exception as e:
         log.error(e)
         if hasattr(e, 'message'):

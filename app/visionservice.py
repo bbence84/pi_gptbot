@@ -7,6 +7,7 @@ import base64
 from dotenv import load_dotenv
 load_dotenv()
 
+
 class VisionService:
     def __init__(self, default_language="Hungarian"):
         api_type = os.getenv('OPENAI_API_TYPE')
