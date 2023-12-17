@@ -152,3 +152,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Other
+gptchatservice_btp.py
+gptwrapper.py

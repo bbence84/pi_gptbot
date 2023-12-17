@@ -1,6 +1,6 @@
 import os
 import openai
-from openai.error import RateLimitError
+from openai import RateLimitError
 import logging
 import backoff
 import time
@@ -39,7 +39,7 @@ class GPTChatService:
         self.api_type = os.getenv('OPENAI_API_TYPE')
         if self.api_type == 'azure':
             self.client = openai.AzureOpenAI(
-                api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
+                api_key=os.environ.get("OPENAI_API_KEY"),
                 azure_endpoint = os.getenv('AZURE_OPENAI_ENDPOINT'),
                 api_version = os.getenv('AZURE_OPENAI_VERSION'),                          
             )                    
@@ -62,18 +62,13 @@ class GPTChatService:
 
             if self.api_type == 'azure':
                 response = self.client.chat.completions.create( 
-                    api_key = os.getenv('OPENAI_API_KEY'),
-                    api_type = 'azure',
-                    api_base = os.getenv('AZURE_OPENAI_ENDPOINT'),
-                    api_version = os.getenv('AZURE_OPENAI_VERSION'),             
-                    engine=os.getenv('AZURE_OPENAI_ENGINE'),
+                    model=os.getenv('AZURE_OPENAI_DEPLOYMENT'),            
                     messages=self.chat_messages ,
                     max_tokens=bot_config.max_tokens,
                     temperature=bot_config.temperature
                 )
             else:
                 response = self.client.chat.completions.create(
-                    api_key = os.getenv('OPENAI_API_KEY'),
                     model=bot_config.gpt_model,
                     messages=self.chat_messages ,
                     max_tokens=bot_config.max_tokens,
@@ -85,20 +80,16 @@ class GPTChatService:
             print(f"OpenAI API returned an Error", flush=True)
             self.log.error(f"OpenAI API returned an Error")
             if hasattr(e, 'message'):
-                print(e.code, flush=True)
-                self.log.error(e.code)
                 print(e.message, flush=True)
                 self.log.error(e.message)
             else:
-                self.log.error(e.code)
-                print(e.code, flush=True)                
-                print(e, flush=True)          
+                print(e, flush=True)                         
             return ""    
         
 
         # print(f'OpenAI API call ended: {time.time() - start} ms')
 
-        response_text = response['choices'][0]['message']['content'];
+        response_text = response.choices[0].message.content;
         response_text.isalnum();
 
         self.update_stats(self.chat_messages, response_text)
