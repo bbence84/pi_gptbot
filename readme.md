@@ -104,6 +104,16 @@ DISABLE_LCD=False
 GMAIL_USERNAME=xxx@gmail.com
 GMAIL_PASSWORD=
 SEND_URL_TO_EMAIL=xxx@xxx.com
+
+# Optional if you want to enable the weather tool
+OPENWEATHERMAP_API_KEY=
+# Optional if you want to enable the internet search tool
+BING_SEARCH_API_KEY=
+# Optional if you want to enable vision tool (that will use the webcam to tell what it can see, using GPT4 Vision)
+AZURE_OPENAI_GPT4V_API_KEY=
+AZURE_OPENAI_GPT4V_ENDPOINT=
+AZURE_OPENAI_GPT4V_VERSION=
+AZURE_OPENAI_GPT4V_DEPLOYMENT=
 ```
 
 In case you would like to use Azure OpenaAI services, uncomment the 3 lines and also set those variables. Then change the OPENAI_API_TYPE variable to "azure" (without quotes)
@@ -203,6 +213,19 @@ You can add / edit system prompts that you can pick on the config UI. These syst
 Create a new file with name ai_personalities_user.yaml in the app folder:
 `nano ai_personalities_user.yaml`
 
+## Tool use (e.g. internet search)
+
+With the latest update, the pi-gptbot now can use tools! This essentially means that it can use live online services to augment it's knowledge using up to date information from the internet.
+As a demo, the folowing can be enabled:
+1. Internet (news) search: using Bing news search, the bot can get up to date information, e.g. that corresponds to recent events
+1. Current weather: gets the current weather for the given location
+1. Getting current stock price: gets the stock price for the given company
+1. Vision: using the webcam and GPT4 vision, the bot can describe the sourroundings and objects that are shown to the bot
+
+For most these tools, please set the required new environment variables (API keys and settings), see above section for .env variables...
+
+If you want to extend / change the tools usage, check `app/tools.py`. For details on how this works, please see https://platform.openai.com/docs/guides/function-calling
+
 ## Wifi config
 
 https://medium.com/swlh/raspberry-pi-3-connect-to-multiple-wifis-set-multiple-static-ips-52f8a80d2ee1
@@ -244,5 +267,5 @@ I am open for contributions and pull request to further improve the project :)
 
 - [ ] When the device hasn't booted for a longer time (~10 hours or more), then the speech is not recognized. You need to restart the Raspberry or the app to make it work
 - [X] Create config for "headless" assistant (make the bot work without an LCD screen)
-- [ ] Improve the performance of the facial expression redraw
+- [X] Improve the performance of the facial expression redraw
 - [ ] Dockerize the whole thing (help would be appreciated, as I am stuck with exposing the audio and low level GPIO access that is required by the LCD display library)

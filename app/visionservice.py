@@ -13,14 +13,15 @@ class VisionService:
         api_type = os.getenv('OPENAI_API_TYPE')
         if api_type == 'azure':
             self.client = openai.AzureOpenAI(
-                api_key=os.environ.get("AZURE_OPENAI_GPT4_API_KEY"),
-                azure_endpoint = os.getenv('AZURE_OPENAI_GPT4_ENDPOINT'),
-                api_version = os.getenv('AZURE_OPENAI_GPT4_VERSION'),                          
+                api_key=os.environ.get("AZURE_OPENAI_GPT4V_API_KEY"),
+                azure_endpoint = os.getenv('AZURE_OPENAI_GPT4V_ENDPOINT'),
+                api_version = os.getenv('AZURE_OPENAI_GPT4V_VERSION'),                          
             )                    
         else:
             self.client = openai.OpenAI(
                 api_key=os.environ.get("OPENAI_API_KEY"),
             )   
+        self.default_language = default_language
 
     def encode_image(self, image_path):
         with open(image_path, "rb") as image_file:
@@ -32,6 +33,8 @@ class VisionService:
         file_name = 'capture.png'      
         local_file = os.path.join(file_path, file_name)
         cam = cv2.VideoCapture(0)
+        cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1024)
+        cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 768)        
         result, image = cam.read()
         rotated=cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
         if result:
@@ -43,13 +46,13 @@ class VisionService:
         base64_image = self.encode_image(local_file)     
 
         response = self.client.chat.completions.create(
-            model=os.getenv('AZURE_OPENAI_GPT4_DEPLOYMENT'), 
+            model=os.getenv('AZURE_OPENAI_GPT4V_DEPLOYMENT'), 
             messages=[
                 {
                     "role": "user",
                     "content": [
                         {"type": "text", "text": 
-                        '''Act as a robot who has vision. Describe what you can see. Respond in Hungarian.'''},
+                        f'''Act as an AI assistant device who has vision. Describe what you can see. Respond in {self.default_language}.''' },
                         {
                             "type": "image_url",
                             "image_url": {

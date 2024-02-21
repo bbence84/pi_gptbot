@@ -6,12 +6,16 @@ import backoff
 import time
 import re
 import tiktoken
+import json
 
 from dotenv import load_dotenv
 load_dotenv()
 
 from botconfig import BotConfig
 bot_config = BotConfig()
+
+from tools import AITools
+
 
 class GPTChatService:
     
@@ -26,6 +30,8 @@ class GPTChatService:
 
         self.default_language = default_language        
 
+        self.openai_tools = AITools(default_language=default_language)
+
         default_lang_prompt = f" Respond in {self.default_language} by default."
         
         self.initial_prompt = [{"role": "user", "content":bot_config.initial_prompt + default_lang_prompt }]
@@ -35,6 +41,8 @@ class GPTChatService:
         self.log.info(f"Initial ChatGPT prompt:  {self.chat_messages}")
 
         self.tokenizer_encoding = tiktoken.get_encoding("cl100k_base")
+
+        self.tools_list = self.openai_tools.get_tools_list()
 
         self.api_type = os.getenv('OPENAI_API_TYPE')
         if self.api_type == 'azure':
@@ -59,22 +67,19 @@ class GPTChatService:
         start = time.time()
 
         try:
-
+            
             if self.api_type == 'azure':
-                response = self.client.chat.completions.create( 
-                    model=os.getenv('AZURE_OPENAI_DEPLOYMENT'),            
-                    messages=self.chat_messages ,
-                    max_tokens=bot_config.max_tokens,
-                    temperature=bot_config.temperature
-                )
+                model = os.getenv('AZURE_OPENAI_DEPLOYMENT')
             else:
-                response = self.client.chat.completions.create(
-                    model=bot_config.gpt_model,
-                    messages=self.chat_messages ,
-                    max_tokens=bot_config.max_tokens,
-                    temperature=bot_config.temperature
-                )
+                model = bot_config.gpt_model
 
+            response = self.client.chat.completions.create( 
+                model=model,            
+                messages=self.chat_messages ,
+                max_tokens=bot_config.max_tokens,
+                temperature=bot_config.temperature,
+                tools=self.tools_list
+            )                
 
         except Exception as e:
             print(f"OpenAI API returned an Error", flush=True)
@@ -86,18 +91,45 @@ class GPTChatService:
                 print(e, flush=True)                         
             return ""    
         
-
         # print(f'OpenAI API call ended: {time.time() - start} ms')
 
-        response_text = response.choices[0].message.content;
-        response_text.isalnum();
+        response_message = response.choices[0].message
+        self.chat_messages.append(response_message)
 
-        self.update_stats(self.chat_messages, response_text)
+
+        tool_calls = response_message.tool_calls
+        response_text = ''
+
+        if tool_calls:
+            for tool_call in tool_calls:
+                function_args = json.loads(tool_call.function.arguments) 
+                function_call_response = self.openai_tools.call_tool(tool_call.function.name, function_args)           
+
+                self.chat_messages.append(
+                    {
+                        "tool_call_id": tool_call.id,
+                        "role": "tool",
+                        "name": tool_call.function.name,
+                        "content": function_call_response,
+                    }
+                ) 
+                function_response = self.client.chat.completions.create(
+                    model=model,
+                    messages=self.chat_messages,
+                )   
+                
+                response_function_message = function_response.choices[0].message
+
+                self.chat_messages.append(response_function_message)
+                response_text = response_function_message.content
+
+        else:      
+            response_text = response_message.content
+            
+        response_text.isalnum();
+        #self.update_stats(self.chat_messages, response_text)
         self.check_token_count(self.chat_messages, self.total_ai_tokens)
-        
         response_text = self.adjust_response(response_text)
-        
-        self.append_text_to_chat_log(response_text)
         
         self.log.info(f"ChatGPT response:  {response_text}")
 
