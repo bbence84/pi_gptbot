@@ -63,7 +63,7 @@ class AITools:
                 "type": "function",
                 "function": {
                     "name": "get_whats_visible_on_camera",
-                    "description": "Get what is visible around you.",
+                    "description": "Get what is visible around you. Also can be used to describe what the bot can see in case it's requested or implied that vision skills is required.",
                     "parameters": {
                         "type": "object",
                         "properties": {},
