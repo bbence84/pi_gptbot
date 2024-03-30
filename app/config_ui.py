@@ -139,7 +139,7 @@ def reboot_system():
 
 def send_mail_for_url(urls):
     for url in urls:
-        if 'nicegui.io' in url:
+        if 'on-air.io' in url:
             emailer.sendmail(os.getenv('SEND_URL_TO_EMAIL', ''), 'Pi-GPTBot Config UI URL', url)  
 
 def main():
